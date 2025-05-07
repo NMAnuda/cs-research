@@ -11,8 +11,8 @@ const Layout = ({ children }) => {
           <Link href="/" className="text-white hover:text-gray-200">
             Home
           </Link>
-          <Link href="/View-Report" className="text-white hover:text-gray-200">
-          View Report
+          <Link href="/viewpolice" className="text-white hover:text-gray-200">
+          People
           </Link>
           <Link href="/Graphical-view" className="text-white hover:text-gray-200">
           Graphical view

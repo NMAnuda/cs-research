@@ -1,6 +1,11 @@
 {
+  "/(All)/activity/page": "app/(All)/activity/page.js",
   "/(All)/home/page": "app/(All)/home/page.js",
+  "/(police)/Attendance/page": "app/(police)/Attendance/page.js",
+  "/(police)/Pdetails/page": "app/(police)/Pdetails/page.js",
+  "/(police)/Phome/page": "app/(police)/Phome/page.js",
+  "/(police)/viewpolice/page": "app/(police)/viewpolice/page.js",
+  "/(policeman)/cphome/page": "app/(policeman)/cphome/page.js",
   "/_not-found/page": "app/_not-found/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/page": "app/page.js"
+  "/favicon.ico/route": "app/favicon.ico/route.js"
 }
