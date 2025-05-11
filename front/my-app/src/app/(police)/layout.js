@@ -8,26 +8,35 @@ const Layout = ({ children }) => {
         <div className="w-1/3"></div>
 
         <div className="absolute left-1/2 transform -translate-x-1/2 space-x-8">
-          <Link href="/" className="text-white hover:text-gray-200">
+          <Link href="/Phome" className="text-white hover:text-gray-200">
             Home
           </Link>
-          <Link href="/viewpolice" className="text-white hover:text-gray-200">
-          People
+          <Link href="/viewreport" className="text-white hover:text-gray-200">
+          View Report
           </Link>
-          <Link href="/Graphical-view" className="text-white hover:text-gray-200">
+          <Link href="/ghrape" className="text-white hover:text-gray-200">
           Graphical view
           </Link>
-          <Link href="/Officers" className="text-white hover:text-gray-200">
-          Officers
+          
+          <Link href="/HR" className="text-white hover:text-gray-200">
+          HR
           </Link>
-          <Link href="/about" className="text-white hover:text-gray-200">
-          About
+          <Link href="/History" className="text-white hover:text-gray-200">
+          History
           </Link>
         </div>
 
         <div className="w-1/3 flex justify-end">
-          <Image src="/user-icon.png" alt="User" width={24} height={24} />
-        </div>
+              
+                         <Link
+                           href="http://localhost:3000/login"
+                           className="flex items-center gap-3 h-12 px-4 rounded-lg text-lg font-medium bg-gray-800 hover:bg-red-700 hover:scale-[1.02] transition-all duration-200"
+                         >
+                           <span className="text-xl">↩️</span>
+                           <span>Logout</span>
+                         </Link>
+                       
+               </div>
       </nav>
 
       <main className="flex-1 w-full overflow-y-auto">

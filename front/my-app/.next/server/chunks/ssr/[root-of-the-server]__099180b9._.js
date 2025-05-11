@@ -134,7 +134,17 @@ function PolicemanGeneralView() {
     const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const fetchCheckpoints = async ()=>{
         try {
-            const response = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get('http://localhost:3080/policeman-checkpoints');
+            const loggedInCity = localStorage.getItem('loggedInCity');
+            if (!loggedInCity) {
+                setError('No city selected. Please log in again.');
+                setLoading(false);
+                return;
+            }
+            const response = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get('http://localhost:3080/policeman-checkpoints', {
+                params: {
+                    city: loggedInCity
+                }
+            });
             console.log('Fetched Checkpoints:', response.data); // Debug: Log the fetched checkpoints
             setCheckpoints(response.data);
             setLoading(false);
@@ -167,7 +177,7 @@ function PolicemanGeneralView() {
                 children: "Policeman General View"
             }, void 0, false, {
                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                lineNumber: 42,
+                lineNumber: 50,
                 columnNumber: 7
             }, this),
             message && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -175,7 +185,7 @@ function PolicemanGeneralView() {
                 children: message
             }, void 0, false, {
                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                lineNumber: 43,
+                lineNumber: 51,
                 columnNumber: 19
             }, this),
             error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -183,7 +193,7 @@ function PolicemanGeneralView() {
                 children: error
             }, void 0, false, {
                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                lineNumber: 44,
+                lineNumber: 52,
                 columnNumber: 17
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -193,7 +203,7 @@ function PolicemanGeneralView() {
                     children: "Loading..."
                 }, void 0, false, {
                     fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                    lineNumber: 48,
+                    lineNumber: 56,
                     columnNumber: 11
                 }, this) : checkpoints.length > 0 ? checkpoints.map((checkpoint)=>{
                     // Debug: Log the actionTaken value for each checkpoint
@@ -213,7 +223,7 @@ function PolicemanGeneralView() {
                                                 children: "Vehicle Number:"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                                lineNumber: 59,
+                                                lineNumber: 67,
                                                 columnNumber: 45
                                             }, this),
                                             " ",
@@ -221,7 +231,7 @@ function PolicemanGeneralView() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                        lineNumber: 59,
+                                        lineNumber: 67,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -231,7 +241,7 @@ function PolicemanGeneralView() {
                                                 children: "City:"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                                lineNumber: 60,
+                                                lineNumber: 68,
                                                 columnNumber: 45
                                             }, this),
                                             " ",
@@ -239,7 +249,7 @@ function PolicemanGeneralView() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                        lineNumber: 60,
+                                        lineNumber: 68,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -249,7 +259,7 @@ function PolicemanGeneralView() {
                                                 children: "Time:"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                                lineNumber: 61,
+                                                lineNumber: 69,
                                                 columnNumber: 45
                                             }, this),
                                             " ",
@@ -257,7 +267,7 @@ function PolicemanGeneralView() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                        lineNumber: 61,
+                                        lineNumber: 69,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -267,7 +277,7 @@ function PolicemanGeneralView() {
                                                 children: "Status:"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                                lineNumber: 62,
+                                                lineNumber: 70,
                                                 columnNumber: 45
                                             }, this),
                                             " ",
@@ -275,13 +285,13 @@ function PolicemanGeneralView() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                        lineNumber: 62,
+                                        lineNumber: 70,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                lineNumber: 58,
+                                lineNumber: 66,
                                 columnNumber: 17
                             }, this),
                             checkpoint.photoPath ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -290,14 +300,14 @@ function PolicemanGeneralView() {
                                 className: "w-full h-48 object-cover rounded-md mb-2"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                lineNumber: 65,
+                                lineNumber: 73,
                                 columnNumber: 19
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "text-black",
                                 children: "No image available"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                lineNumber: 71,
+                                lineNumber: 79,
                                 columnNumber: 19
                             }, this),
                             actionTaken === 'Pending' ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -309,7 +319,7 @@ function PolicemanGeneralView() {
                                         children: "Get Action"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                        lineNumber: 75,
+                                        lineNumber: 83,
                                         columnNumber: 21
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -318,13 +328,13 @@ function PolicemanGeneralView() {
                                         children: "Not"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                        lineNumber: 81,
+                                        lineNumber: 89,
                                         columnNumber: 21
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                lineNumber: 74,
+                                lineNumber: 82,
                                 columnNumber: 19
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "text-black",
@@ -334,13 +344,13 @@ function PolicemanGeneralView() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                                lineNumber: 89,
+                                lineNumber: 97,
                                 columnNumber: 19
                             }, this)
                         ]
                     }, checkpoint._id, true, {
                         fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                        lineNumber: 57,
+                        lineNumber: 65,
                         columnNumber: 15
                     }, this);
                 }) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -348,18 +358,18 @@ function PolicemanGeneralView() {
                     children: "No checkpoints found for today"
                 }, void 0, false, {
                     fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                    lineNumber: 95,
+                    lineNumber: 103,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/(policeman)/cphome/page.js",
-                lineNumber: 46,
+                lineNumber: 54,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/(policeman)/cphome/page.js",
-        lineNumber: 41,
+        lineNumber: 49,
         columnNumber: 5
     }, this);
 }

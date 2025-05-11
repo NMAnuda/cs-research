@@ -128,6 +128,17 @@ function PdetailsForm() {
     });
     const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        const loggedInCity = localStorage.getItem('loggedInCity');
+        if (loggedInCity) {
+            setFormData((prev)=>({
+                    ...prev,
+                    city: loggedInCity
+                }));
+        } else {
+            setError('No city selected. Please log in again.');
+        }
+    }, []);
     const handleChange = (e)=>{
         const { name, value } = e.target;
         setFormData((prev)=>({
@@ -139,6 +150,16 @@ function PdetailsForm() {
         e.preventDefault();
         setMessage('');
         setError('');
+        // Ensure city matches logged-in city
+        const loggedInCity = localStorage.getItem('loggedInCity');
+        if (!loggedInCity) {
+            setError('No city selected. Please log in again.');
+            return;
+        }
+        if (formData.city !== loggedInCity) {
+            setError('You can only submit details for your logged-in city.');
+            return;
+        }
         try {
             const response = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].post('http://localhost:3080/submit-pdetails', formData, {
                 headers: {
@@ -146,14 +167,15 @@ function PdetailsForm() {
                 }
             });
             const result = response.data;
+            window.location.href = '/viewpolice';
             if (response.status === 200) {
                 setMessage(result.message);
                 setFormData({
                     phoneno: '',
                     name: '',
-                    city: '',
+                    city: loggedInCity,
                     ID: ''
-                });
+                }); // Reset form but keep city
             } else {
                 setError(result.error);
             }
@@ -171,7 +193,7 @@ function PdetailsForm() {
                     children: "Submit Personal Details"
                 }, void 0, false, {
                     fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                    lineNumber: 53,
+                    lineNumber: 75,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -190,13 +212,13 @@ function PdetailsForm() {
                                             children: "*"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                                            lineNumber: 57,
+                                            lineNumber: 79,
                                             columnNumber: 28
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                                    lineNumber: 56,
+                                    lineNumber: 78,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -210,13 +232,13 @@ function PdetailsForm() {
                                     placeholder: "Enter phone number"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                                    lineNumber: 59,
+                                    lineNumber: 81,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                            lineNumber: 55,
+                            lineNumber: 77,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -227,7 +249,7 @@ function PdetailsForm() {
                                     children: "Name"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                                    lineNumber: 71,
+                                    lineNumber: 93,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -240,13 +262,13 @@ function PdetailsForm() {
                                     placeholder: "Enter name"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                                    lineNumber: 74,
+                                    lineNumber: 96,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                            lineNumber: 70,
+                            lineNumber: 92,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -257,7 +279,7 @@ function PdetailsForm() {
                                     children: "City"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                                    lineNumber: 85,
+                                    lineNumber: 107,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -266,17 +288,18 @@ function PdetailsForm() {
                                     name: "city",
                                     value: formData.city,
                                     onChange: handleChange,
-                                    className: "mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
-                                    placeholder: "Enter city"
+                                    className: "mt-1 w-full p-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed",
+                                    placeholder: "City (auto-filled)",
+                                    readOnly: true
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                                    lineNumber: 88,
+                                    lineNumber: 110,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                            lineNumber: 84,
+                            lineNumber: 106,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -287,7 +310,7 @@ function PdetailsForm() {
                                     children: "ID"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                                    lineNumber: 99,
+                                    lineNumber: 122,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -300,13 +323,13 @@ function PdetailsForm() {
                                     placeholder: "Enter ID"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                                    lineNumber: 102,
+                                    lineNumber: 125,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                            lineNumber: 98,
+                            lineNumber: 121,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -315,13 +338,13 @@ function PdetailsForm() {
                             children: "Submit"
                         }, void 0, false, {
                             fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                            lineNumber: 112,
+                            lineNumber: 135,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                    lineNumber: 54,
+                    lineNumber: 76,
                     columnNumber: 9
                 }, this),
                 message && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -329,7 +352,7 @@ function PdetailsForm() {
                     children: message
                 }, void 0, false, {
                     fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                    lineNumber: 119,
+                    lineNumber: 142,
                     columnNumber: 21
                 }, this),
                 error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -337,18 +360,18 @@ function PdetailsForm() {
                     children: error
                 }, void 0, false, {
                     fileName: "[project]/src/app/(police)/Pdetails/page.js",
-                    lineNumber: 120,
+                    lineNumber: 143,
                     columnNumber: 19
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/(police)/Pdetails/page.js",
-            lineNumber: 52,
+            lineNumber: 74,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/(police)/Pdetails/page.js",
-        lineNumber: 51,
+        lineNumber: 73,
         columnNumber: 5
     }, this);
 }

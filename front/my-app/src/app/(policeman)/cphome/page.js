@@ -11,7 +11,15 @@ export default function PolicemanGeneralView() {
 
   const fetchCheckpoints = async () => {
     try {
-      const response = await axios.get('http://localhost:3080/policeman-checkpoints');
+      const loggedInCity = localStorage.getItem('loggedInCity');
+      if (!loggedInCity) {
+        setError('No city selected. Please log in again.');
+        setLoading(false);
+        return;
+      }
+      const response = await axios.get('http://localhost:3080/policeman-checkpoints', {
+        params: { city: loggedInCity },
+      });
       console.log('Fetched Checkpoints:', response.data); // Debug: Log the fetched checkpoints
       setCheckpoints(response.data);
       setLoading(false);

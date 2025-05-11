@@ -10,30 +10,35 @@ export default function AttendanceTable() {
   const [lastResetDate, setLastResetDate] = useState(null);
 
   useEffect(() => {
-    
-    const today = new Date().toISOString().split('T')[0]; 
+    const today = new Date().toISOString().split('T')[0];
     const storedDate = localStorage.getItem('lastResetDate');
+    const loggedInCity = localStorage.getItem('loggedInCity');
+
+    if (!loggedInCity) {
+      setError('No city selected. Please log in again.');
+      return;
+    }
 
     if (storedDate !== today) {
-      
-      fetchAttendanceData();
+      fetchAttendanceData(loggedInCity);
       localStorage.setItem('lastResetDate', today);
       setLastResetDate(today);
     } else {
-      
-      fetchAttendanceData();
+      fetchAttendanceData(loggedInCity);
       setLastResetDate(storedDate);
     }
   }, []);
 
-  const fetchAttendanceData = async () => {
+  const fetchAttendanceData = async (city) => {
     try {
-      const response = await axios.get('http://localhost:3080/attendance-records');
+      const response = await axios.get('http://localhost:3080/attendance-records', {
+        params: { city: city },
+      });
       if (response.status === 200) {
-       
         const initializedData = response.data.map(record => ({
           ...record,
-          Attendace: false, 
+          Attendace: false,
+          city: city, // Ensure city is included in each record
         }));
         setAttendanceData(initializedData);
       } else {
@@ -52,7 +57,19 @@ export default function AttendanceTable() {
 
   const handleSubmitAttendance = async () => {
     try {
-      const response = await axios.put('http://localhost:3080/update-attendance', attendanceData, {
+      const loggedInCity = localStorage.getItem('loggedInCity');
+      if (!loggedInCity) {
+        setError('No city selected. Please log in again.');
+        return;
+      }
+
+      // Ensure all records have the correct city before submission
+      const updatedAttendanceData = attendanceData.map(record => ({
+        ...record,
+        city: loggedInCity,
+      }));
+
+      const response = await axios.put('http://localhost:3080/update-attendance', updatedAttendanceData, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -64,7 +81,7 @@ export default function AttendanceTable() {
           ...record,
           Attendace: false,
         })));
-        setTimeout(() => setMessage(''), 3000); 
+        setTimeout(() => setMessage(''), 3000);
       } else {
         setError(response.data.error);
       }

@@ -13,7 +13,15 @@ export default function OfficersView() {
 
   const fetchOfficers = async () => {
     try {
-      const response = await axios.get('http://localhost:3080/attendance-records');
+      const loggedInCity = localStorage.getItem('loggedInCity');
+      if (!loggedInCity) {
+        setError('No city selected. Please log in again.');
+        setLoading(false);
+        return;
+      }
+      const response = await axios.get('http://localhost:3080/attendance-records', {
+        params: { city: loggedInCity },
+      });
       setOfficers(response.data);
       setLoading(false);
     } catch (error) {
@@ -43,6 +51,16 @@ export default function OfficersView() {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    const loggedInCity = localStorage.getItem('loggedInCity');
+    if (!loggedInCity) {
+      setError('No city selected. Please log in again.');
+      return;
+    }
+    if (formData.city !== loggedInCity) {
+      setError('You can only update officers for your logged-in city.');
+      return;
+    }
+
     try {
       const response = await axios.put(`http://localhost:3080/update-pdetails/${editOfficer._id}`, formData);
       setMessage(response.data.message);
@@ -57,6 +75,16 @@ export default function OfficersView() {
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this officer?')) {
       try {
+        const officerToDelete = officers.find(o => o._id === id);
+        const loggedInCity = localStorage.getItem('loggedInCity');
+        if (!loggedInCity) {
+          setError('No city selected. Please log in again.');
+          return;
+        }
+        if (officerToDelete.city !== loggedInCity) {
+          setError('You can only delete officers from your logged-in city.');
+          return;
+        }
         const response = await axios.delete(`http://localhost:3080/delete-pdetails/${id}`);
         setMessage(response.data.message);
         setOfficers(officers.filter(o => o._id !== id));
@@ -65,6 +93,10 @@ export default function OfficersView() {
         setError(error.response?.data?.error || 'Failed to delete officer');
       }
     }
+  };
+
+  const handleAddNewOfficer = () => {
+    window.location.href = '/Pdetails'; 
   };
 
   return (
@@ -118,6 +150,16 @@ export default function OfficersView() {
         )}
       </div>
 
+      {/* Add New Officer Button */}
+      <div className="mt-6 text-center">
+        <button
+          onClick={handleAddNewOfficer}
+          className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition"
+        >
+          Add New Officer
+        </button>
+      </div>
+
       {/* Edit Modal */}
       {editOfficer && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -164,8 +206,8 @@ export default function OfficersView() {
                   name="city"
                   value={formData.city}
                   onChange={handleFormChange}
-                  className="w-full border border-black p-2 rounded text-black"
-                  required
+                  className="w-full border border-black p-2 rounded text-black bg-gray-100 cursor-not-allowed"
+                  readOnly // Make city read-only
                 />
               </div>
               <div className="flex justify-end gap-2">

@@ -31,7 +31,17 @@ function OfficersView() {
     const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const fetchOfficers = async ()=>{
         try {
-            const response = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get('http://localhost:3080/attendance-records');
+            const loggedInCity = localStorage.getItem('loggedInCity');
+            if (!loggedInCity) {
+                setError('No city selected. Please log in again.');
+                setLoading(false);
+                return;
+            }
+            const response = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get('http://localhost:3080/attendance-records', {
+                params: {
+                    city: loggedInCity
+                }
+            });
             setOfficers(response.data);
             setLoading(false);
         } catch (error) {
@@ -62,6 +72,15 @@ function OfficersView() {
     };
     const handleUpdate = async (e)=>{
         e.preventDefault();
+        const loggedInCity = localStorage.getItem('loggedInCity');
+        if (!loggedInCity) {
+            setError('No city selected. Please log in again.');
+            return;
+        }
+        if (formData.city !== loggedInCity) {
+            setError('You can only update officers for your logged-in city.');
+            return;
+        }
         try {
             const response = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].put(`http://localhost:3080/update-pdetails/${editOfficer._id}`, formData);
             setMessage(response.data.message);
@@ -75,6 +94,16 @@ function OfficersView() {
     const handleDelete = async (id)=>{
         if (confirm('Are you sure you want to delete this officer?')) {
             try {
+                const officerToDelete = officers.find((o)=>o._id === id);
+                const loggedInCity = localStorage.getItem('loggedInCity');
+                if (!loggedInCity) {
+                    setError('No city selected. Please log in again.');
+                    return;
+                }
+                if (officerToDelete.city !== loggedInCity) {
+                    setError('You can only delete officers from your logged-in city.');
+                    return;
+                }
                 const response = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].delete(`http://localhost:3080/delete-pdetails/${id}`);
                 setMessage(response.data.message);
                 setOfficers(officers.filter((o)=>o._id !== id));
@@ -84,6 +113,9 @@ function OfficersView() {
             }
         }
     };
+    const handleAddNewOfficer = ()=>{
+        window.location.href = '/Pdetails';
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "min-h-screen bg-white p-6",
         children: [
@@ -92,7 +124,7 @@ function OfficersView() {
                 children: "Officers View"
             }, void 0, false, {
                 fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                lineNumber: 72,
+                lineNumber: 104,
                 columnNumber: 7
             }, this),
             message && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -100,7 +132,7 @@ function OfficersView() {
                 children: message
             }, void 0, false, {
                 fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                lineNumber: 73,
+                lineNumber: 105,
                 columnNumber: 19
             }, this),
             error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -108,7 +140,7 @@ function OfficersView() {
                 children: error
             }, void 0, false, {
                 fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                lineNumber: 74,
+                lineNumber: 106,
                 columnNumber: 17
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -118,7 +150,7 @@ function OfficersView() {
                     children: "Loading..."
                 }, void 0, false, {
                     fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                    lineNumber: 79,
+                    lineNumber: 111,
                     columnNumber: 11
                 }, this) : officers.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
                     className: "min-w-full border border-black",
@@ -131,7 +163,7 @@ function OfficersView() {
                                         children: "Name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                        lineNumber: 84,
+                                        lineNumber: 116,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -139,7 +171,7 @@ function OfficersView() {
                                         children: "ID"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                        lineNumber: 85,
+                                        lineNumber: 117,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -147,7 +179,7 @@ function OfficersView() {
                                         children: "Phone Number"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                        lineNumber: 86,
+                                        lineNumber: 118,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -155,7 +187,7 @@ function OfficersView() {
                                         children: "City"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                        lineNumber: 87,
+                                        lineNumber: 119,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -163,18 +195,18 @@ function OfficersView() {
                                         children: "Actions"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                        lineNumber: 88,
+                                        lineNumber: 120,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                lineNumber: 83,
+                                lineNumber: 115,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                            lineNumber: 82,
+                            lineNumber: 114,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -186,7 +218,7 @@ function OfficersView() {
                                             children: officer.name
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 94,
+                                            lineNumber: 126,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -194,7 +226,7 @@ function OfficersView() {
                                             children: officer.ID
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 95,
+                                            lineNumber: 127,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -202,7 +234,7 @@ function OfficersView() {
                                             children: officer.phoneno
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 96,
+                                            lineNumber: 128,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -210,7 +242,7 @@ function OfficersView() {
                                             children: officer.city
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 97,
+                                            lineNumber: 129,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -222,7 +254,7 @@ function OfficersView() {
                                                     children: "Edit"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                                    lineNumber: 99,
+                                                    lineNumber: 131,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -231,42 +263,58 @@ function OfficersView() {
                                                     children: "Delete"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                                    lineNumber: 105,
+                                                    lineNumber: 137,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 98,
+                                            lineNumber: 130,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, officer._id, true, {
                                     fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                    lineNumber: 93,
+                                    lineNumber: 125,
                                     columnNumber: 17
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                            lineNumber: 91,
+                            lineNumber: 123,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                    lineNumber: 81,
+                    lineNumber: 113,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                     className: "text-black text-center",
                     children: "No officers found"
                 }, void 0, false, {
                     fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                    lineNumber: 117,
+                    lineNumber: 149,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                lineNumber: 77,
+                lineNumber: 109,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "mt-6 text-center",
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                    onClick: handleAddNewOfficer,
+                    className: "bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition",
+                    children: "Add New Officer"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/(police)/viewpolice/page.js",
+                    lineNumber: 155,
+                    columnNumber: 9
+                }, this)
+            }, void 0, false, {
+                fileName: "[project]/src/app/(police)/viewpolice/page.js",
+                lineNumber: 154,
                 columnNumber: 7
             }, this),
             editOfficer && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -279,7 +327,7 @@ function OfficersView() {
                             children: "Edit Officer"
                         }, void 0, false, {
                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                            lineNumber: 125,
+                            lineNumber: 167,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -292,7 +340,7 @@ function OfficersView() {
                                             children: "Name"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 128,
+                                            lineNumber: 170,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -304,13 +352,13 @@ function OfficersView() {
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 129,
+                                            lineNumber: 171,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                    lineNumber: 127,
+                                    lineNumber: 169,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -321,7 +369,7 @@ function OfficersView() {
                                             children: "ID"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 139,
+                                            lineNumber: 181,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -333,13 +381,13 @@ function OfficersView() {
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 140,
+                                            lineNumber: 182,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                    lineNumber: 138,
+                                    lineNumber: 180,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -350,7 +398,7 @@ function OfficersView() {
                                             children: "Phone Number"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 150,
+                                            lineNumber: 192,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -362,13 +410,13 @@ function OfficersView() {
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 151,
+                                            lineNumber: 193,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                    lineNumber: 149,
+                                    lineNumber: 191,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -379,7 +427,7 @@ function OfficersView() {
                                             children: "City"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 161,
+                                            lineNumber: 203,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -387,17 +435,17 @@ function OfficersView() {
                                             name: "city",
                                             value: formData.city,
                                             onChange: handleFormChange,
-                                            className: "w-full border border-black p-2 rounded text-black",
-                                            required: true
+                                            className: "w-full border border-black p-2 rounded text-black bg-gray-100 cursor-not-allowed",
+                                            readOnly: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 162,
+                                            lineNumber: 204,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                    lineNumber: 160,
+                                    lineNumber: 202,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -409,7 +457,7 @@ function OfficersView() {
                                             children: "Cancel"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 172,
+                                            lineNumber: 214,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -418,36 +466,36 @@ function OfficersView() {
                                             children: "Save"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                            lineNumber: 178,
+                                            lineNumber: 220,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                                    lineNumber: 171,
+                                    lineNumber: 213,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                            lineNumber: 126,
+                            lineNumber: 168,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                    lineNumber: 124,
+                    lineNumber: 166,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/(police)/viewpolice/page.js",
-                lineNumber: 123,
+                lineNumber: 165,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/(police)/viewpolice/page.js",
-        lineNumber: 71,
+        lineNumber: 103,
         columnNumber: 5
     }, this);
 }

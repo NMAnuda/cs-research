@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from "axios";
 
 export default function PdetailsForm() {
@@ -8,10 +8,22 @@ export default function PdetailsForm() {
     phoneno: '',
     name: '',
     city: '',
-    ID: '', 
+    ID: '',
   });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const loggedInCity = localStorage.getItem('loggedInCity');
+    if (loggedInCity) {
+      setFormData((prev) => ({
+        ...prev,
+        city: loggedInCity,
+      }));
+    } else {
+      setError('No city selected. Please log in again.');
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,6 +38,17 @@ export default function PdetailsForm() {
     setMessage('');
     setError('');
 
+    // Ensure city matches logged-in city
+    const loggedInCity = localStorage.getItem('loggedInCity');
+    if (!loggedInCity) {
+      setError('No city selected. Please log in again.');
+      return;
+    }
+    if (formData.city !== loggedInCity) {
+      setError('You can only submit details for your logged-in city.');
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:3080/submit-pdetails', formData, {
         headers: {
@@ -33,12 +56,11 @@ export default function PdetailsForm() {
         },
       });
 
-      
       const result = response.data;
-
+      window.location.href = '/viewpolice';
       if (response.status === 200) {
         setMessage(result.message);
-        setFormData({ phoneno: '', name: '', city: '', ID: '' }); 
+        setFormData({ phoneno: '', name: '', city: loggedInCity, ID: '' }); // Reset form but keep city
       } else {
         setError(result.error);
       }
@@ -91,8 +113,9 @@ export default function PdetailsForm() {
               name="city"
               value={formData.city}
               onChange={handleChange}
-              className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter city"
+              className="mt-1 w-full p-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+              placeholder="City (auto-filled)"
+              readOnly // Make the city field read-only
             />
           </div>
           <div>

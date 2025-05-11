@@ -127,22 +127,32 @@ function AttendanceTable() {
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         const today = new Date().toISOString().split('T')[0];
         const storedDate = localStorage.getItem('lastResetDate');
+        const loggedInCity = localStorage.getItem('loggedInCity');
+        if (!loggedInCity) {
+            setError('No city selected. Please log in again.');
+            return;
+        }
         if (storedDate !== today) {
-            fetchAttendanceData();
+            fetchAttendanceData(loggedInCity);
             localStorage.setItem('lastResetDate', today);
             setLastResetDate(today);
         } else {
-            fetchAttendanceData();
+            fetchAttendanceData(loggedInCity);
             setLastResetDate(storedDate);
         }
     }, []);
-    const fetchAttendanceData = async ()=>{
+    const fetchAttendanceData = async (city)=>{
         try {
-            const response = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get('http://localhost:3080/attendance-records');
+            const response = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get('http://localhost:3080/attendance-records', {
+                params: {
+                    city: city
+                }
+            });
             if (response.status === 200) {
                 const initializedData = response.data.map((record)=>({
                         ...record,
-                        Attendace: false
+                        Attendace: false,
+                        city: city
                     }));
                 setAttendanceData(initializedData);
             } else {
@@ -160,7 +170,17 @@ function AttendanceTable() {
     };
     const handleSubmitAttendance = async ()=>{
         try {
-            const response = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].put('http://localhost:3080/update-attendance', attendanceData, {
+            const loggedInCity = localStorage.getItem('loggedInCity');
+            if (!loggedInCity) {
+                setError('No city selected. Please log in again.');
+                return;
+            }
+            // Ensure all records have the correct city before submission
+            const updatedAttendanceData = attendanceData.map((record)=>({
+                    ...record,
+                    city: loggedInCity
+                }));
+            const response = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].put('http://localhost:3080/update-attendance', updatedAttendanceData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -187,7 +207,7 @@ function AttendanceTable() {
                 children: "HR Attendance Management"
             }, void 0, false, {
                 fileName: "[project]/src/app/(police)/Attendance/page.js",
-                lineNumber: 78,
+                lineNumber: 95,
                 columnNumber: 7
             }, this),
             message && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -195,7 +215,7 @@ function AttendanceTable() {
                 children: message
             }, void 0, false, {
                 fileName: "[project]/src/app/(police)/Attendance/page.js",
-                lineNumber: 79,
+                lineNumber: 96,
                 columnNumber: 19
             }, this),
             error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -203,7 +223,7 @@ function AttendanceTable() {
                 children: error
             }, void 0, false, {
                 fileName: "[project]/src/app/(police)/Attendance/page.js",
-                lineNumber: 80,
+                lineNumber: 97,
                 columnNumber: 17
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -220,7 +240,7 @@ function AttendanceTable() {
                                         children: "Name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/(police)/Attendance/page.js",
-                                        lineNumber: 85,
+                                        lineNumber: 102,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -228,7 +248,7 @@ function AttendanceTable() {
                                         children: "ID"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/(police)/Attendance/page.js",
-                                        lineNumber: 86,
+                                        lineNumber: 103,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -236,18 +256,18 @@ function AttendanceTable() {
                                         children: "Attendance"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/(police)/Attendance/page.js",
-                                        lineNumber: 87,
+                                        lineNumber: 104,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/(police)/Attendance/page.js",
-                                lineNumber: 84,
+                                lineNumber: 101,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/(police)/Attendance/page.js",
-                            lineNumber: 83,
+                            lineNumber: 100,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -259,7 +279,7 @@ function AttendanceTable() {
                                             children: record.name
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/Attendance/page.js",
-                                            lineNumber: 93,
+                                            lineNumber: 110,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -267,7 +287,7 @@ function AttendanceTable() {
                                             children: record.ID
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/Attendance/page.js",
-                                            lineNumber: 94,
+                                            lineNumber: 111,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -279,34 +299,34 @@ function AttendanceTable() {
                                                 className: "h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/(police)/Attendance/page.js",
-                                                lineNumber: 96,
+                                                lineNumber: 113,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/(police)/Attendance/page.js",
-                                            lineNumber: 95,
+                                            lineNumber: 112,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, record.ID, true, {
                                     fileName: "[project]/src/app/(police)/Attendance/page.js",
-                                    lineNumber: 92,
+                                    lineNumber: 109,
                                     columnNumber: 15
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/app/(police)/Attendance/page.js",
-                            lineNumber: 90,
+                            lineNumber: 107,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/(police)/Attendance/page.js",
-                    lineNumber: 82,
+                    lineNumber: 99,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/(police)/Attendance/page.js",
-                lineNumber: 81,
+                lineNumber: 98,
                 columnNumber: 7
             }, this),
             attendanceData.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -314,7 +334,7 @@ function AttendanceTable() {
                 children: "No attendance records found."
             }, void 0, false, {
                 fileName: "[project]/src/app/(police)/Attendance/page.js",
-                lineNumber: 108,
+                lineNumber: 125,
                 columnNumber: 39
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -325,18 +345,18 @@ function AttendanceTable() {
                     children: "Submit Attendance"
                 }, void 0, false, {
                     fileName: "[project]/src/app/(police)/Attendance/page.js",
-                    lineNumber: 110,
+                    lineNumber: 127,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/(police)/Attendance/page.js",
-                lineNumber: 109,
+                lineNumber: 126,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/(police)/Attendance/page.js",
-        lineNumber: 77,
+        lineNumber: 94,
         columnNumber: 5
     }, this);
 }
